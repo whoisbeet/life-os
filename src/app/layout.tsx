@@ -28,13 +28,18 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/icon.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.svg", type: "image/svg+xml" },
+    ],
   },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" /><link rel="icon" href="/favicon.ico" /></head><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}><ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange><QueryProvider>{children}<Toaster richColors position="bottom-right" closeButton /></QueryProvider></ThemeProvider></body></html>;
+  return <html lang="en" suppressHydrationWarning><head><link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" /><link rel="icon" href="/favicon.ico" /><link rel="icon" href="/icon.svg" type="image/svg+xml" /></head><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}><ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange><QueryProvider>{children}<Toaster richColors position="bottom-right" closeButton /></QueryProvider></ThemeProvider></body></html>;
 }
