@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ─── User (authentication) ───────────────────────────────────────────────────
@@ -41,8 +42,8 @@ model Domain {
 
 // ─── Universal Item (the "Digital Brain" node) ───────────────────────────────
 // A single model represents tasks, notes, journal entries, habits, events,
-// finances, contacts, ideas, goals, documents, bookmarks, milestones, etc.
-// Type-specific data lives in a JSON `metadata` string.
+// finances, contacts, ideas, goals, documents, bookmarks, milestones, routines,
+// symptoms, medications, affirmations, and visions.
 model Item {
   id          String   @id @default(cuid())
   type        String   // task | note | journal | habit | event | finance | contact | idea | goal | document | bookmark | milestone | routine | symptom | medication | affirmation | vision
