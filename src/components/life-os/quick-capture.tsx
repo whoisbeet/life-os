@@ -141,7 +141,15 @@ export function QuickCapture() {
               e.preventDefault();
               submit(false);
             }
-            // Number keys 1-6 to switch type when not holding modifiers
+            // Number keys 1-6 to switch type only when the event is not from an editable field
+            const target = e.target;
+            if (
+              target instanceof HTMLInputElement ||
+              target instanceof HTMLTextAreaElement ||
+              (target instanceof HTMLElement && target.isContentEditable)
+            ) {
+              return;
+            }
             if (!e.metaKey && !e.ctrlKey && !e.altKey) {
               const num = parseInt(e.key);
               if (num >= 1 && num <= QUICK_TYPES.length) {
