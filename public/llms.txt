@@ -1,6 +1,6 @@
-# Life OS
+# The Terminal
 
-Life OS is an open-source, self-hostable personal operating system and digital brain.
+The Terminal is an open-source, self-hostable personal operating system and digital brain.
 
 Repository: https://github.com/karim-coder/life-os
 License: MIT
@@ -10,7 +10,7 @@ Database: Prisma with SQLite by default
 
 ## Summary
 
-Life OS helps people manage tasks, notes, journals, habits, finances, calendar events, projects, contacts, goals, reflections, and life domains in one connected system. It can be described as a habit tracker, journal app, task manager, goal tracker, focus timer, calendar planner, finance tracker, second brain, personal knowledge management system, and digital brain.
+The Terminal helps people manage tasks, notes, journals, habits, finances, calendar events, projects, contacts, goals, reflections, and life domains in one connected system. It can be described as a habit tracker, journal app, task manager, goal tracker, focus timer, calendar planner, finance tracker, second brain, personal knowledge management system, and digital brain.
 
 ## Main features
 
@@ -24,4 +24,4 @@ Life OS helps people manage tasks, notes, journals, habits, finances, calendar e
 
 ## Useful search terms
 
-open-source second brain, self-hosted productivity app, personal knowledge management, digital brain, life operating system, habit tracker app, open source habit tracker, self hosted habit tracker, daily habit tracker, habit streak tracker, journal app, open source journal app, daily journal app, digital journal, task manager, open source task manager, daily planner app, calendar planner, finance tracker, goal tracker, focus timer, Pomodoro timer, knowledge graph, personal dashboard, Next.js productivity app.
+open-source second brain, self-hosted productivity app, personal knowledge management, digital brain, personal operating system, habit tracker app, open source habit tracker, self hosted habit tracker, daily habit tracker, habit streak tracker, journal app, open source journal app, daily journal app, digital journal, task manager, open source task manager, daily planner app, calendar planner, finance tracker, goal tracker, focus timer, Pomodoro timer, knowledge graph, personal dashboard, Next.js productivity app.
