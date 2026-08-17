@@ -30,8 +30,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "The Terminal" },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-touch-icon.svg", type: "image/svg+xml" }]
+    icon: "/icon.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 
