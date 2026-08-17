@@ -7,3 +7,6 @@ export function LifeOSShell({ children }: { children: React.ReactNode }) {
     </main>
   );
 }
+
+export { LifeOSShell as Shell };
+export default LifeOSShell;
