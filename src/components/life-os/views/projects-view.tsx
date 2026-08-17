@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLifeOS } from "@/store/life-os";
 import { useProjects, useProject, useCreateProject, useDeleteProject, useUpdateItem } from "@/lib/hooks";
 import { Icon } from "../icon";
@@ -147,6 +148,8 @@ function ProjectDetail({ id }: { id: string }) {
   const { setView, openItemDetail, openItemEditor } = useLifeOS();
   const { data, isLoading } = useProject(id);
   const del = useDeleteProject();
+  const queryClient = useQueryClient();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const updateItem = useUpdateItem();
 
   if (isLoading || !data) {
@@ -154,6 +157,18 @@ function ProjectDetail({ id }: { id: string }) {
   }
 
   const { project, stats } = data;
+
+  async function confirmDelete() {
+    try {
+      await del.mutateAsync(id);
+      await queryClient.invalidateQueries({ queryKey: ["projects"] });
+      notify.success("Project deleted");
+      setDeleteOpen(false);
+      setView("projects");
+    } catch {
+      notify.error("Failed to delete project");
+    }
+  }
   const byType = (data.byType ?? {}) as Record<string, any[]>;
   const tasks = (byType.task || []).sort((a, b) => (a.status === "done" ? 1 : 0) - (b.status === "done" ? 1 : 0) || (new Date(a.dueDate || 0).getTime() - new Date(b.dueDate || 0).getTime()));
   const notes = byType.note || [];
@@ -188,14 +203,36 @@ function ProjectDetail({ id }: { id: string }) {
               </div>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={() => openItemEditor({ type: "task", projectId: id })} className="gap-1.5">
-            <Icon name="Plus" className="h-3.5 w-3.5" /> Add item
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => openItemEditor({ type: "task", projectId: id })} className="gap-1.5">
+              <Icon name="Plus" className="h-3.5 w-3.5" /> Add item
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setDeleteOpen(true)} disabled={del.isPending} className="gap-1.5 text-destructive hover:text-destructive">
+              <Icon name="Trash2" className="h-3.5 w-3.5" /> Delete
+            </Button>
+          </div>
         </div>
         <div className="relative mt-4">
           <Progress value={project.progress} className="h-2" />
         </div>
       </div>
+
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this project? This will remove the project from the database. Items inside will be unlinked.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)} disabled={del.isPending}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={del.isPending}>
+              {del.isPending ? "Deleting…" : "Confirm Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
