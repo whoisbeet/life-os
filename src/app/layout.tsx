@@ -36,5 +36,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}><ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange><QueryProvider>{children}<Toaster richColors position="bottom-right" closeButton /></QueryProvider></ThemeProvider></body></html>;
+  return <html lang="en" suppressHydrationWarning><head><link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" /><link rel="icon" href="/favicon.ico" /></head><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}><ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange><QueryProvider>{children}<Toaster richColors position="bottom-right" closeButton /></QueryProvider></ThemeProvider></body></html>;
 }
