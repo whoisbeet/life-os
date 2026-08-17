@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function AppPage() {
-  return <Shell />;
+  return <Shell>{null}</Shell>;
 }
