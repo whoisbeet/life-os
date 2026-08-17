@@ -10,5 +10,5 @@
   "theme_color": "#09090b",
   "orientation": "any",
   "categories": ["productivity", "utilities"],
-  "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+  "icons": [{"src": "/icon.svg", "sizes": "30x30", "type": "image/svg+xml", "purpose": "any maskable"}]
 }
