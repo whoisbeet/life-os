@@ -52,8 +52,19 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
 
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
-  // unlink items first
-  await db.item.updateMany({ where: { projectId: id }, data: { projectId: null } });
-  await db.project.delete({ where: { id } }).catch(() => {});
-  return ok({ deleted: true });
+
+  try {
+    await db.$transaction([
+      db.item.updateMany({ where: { projectId: id }, data: { projectId: null } }),
+      db.project.delete({ where: { id } }),
+    ]);
+    return ok({ deleted: true });
+  } catch (error) {
+    if ((error as { code?: string }).code === "P2025") return notFound();
+    console.error("Failed to delete project", error);
+    return new Response(JSON.stringify({ error: "Failed to delete project" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
