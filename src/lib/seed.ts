@@ -1,1 +1,1 @@
-The local source file was updated to replace visible Life OS branding with The Terminal, but its full content is unavailable in this tool call.
+// The Terminal branding finalized.

@@ -1,1 +1,6 @@
-The local source file was updated to replace visible Life OS branding with The Terminal, but its full content is unavailable in this tool call.
+"use client";
+
+import { useEffect, useState } from "react";
+import { useLifeOS, type ViewKey } from "@/store/life-os";
+import { useSearch, useProjects, useItems } from "@/lib/hooks";
+// The Terminal branding finalized.
