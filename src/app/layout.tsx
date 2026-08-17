@@ -26,8 +26,12 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "The Terminal" },
   icons: {
-    icon: [{ url: "/logo.svg", sizes: "30x30", type: "image/svg+xml" }],
-    apple: [{ url: "/logo.svg", sizes: "30x30", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
