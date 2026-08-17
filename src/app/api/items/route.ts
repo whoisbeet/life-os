@@ -56,11 +56,27 @@ export async function POST(req: NextRequest) {
   if (!body.title) return bad("title is required");
   if (!body.type) return bad("type is required");
 
-  const { metadata, tagNames, ...rest } = body;
+  const {
+    metadata,
+    tagNames,
+    domainId: rawDomainId,
+    projectId: rawProjectId,
+    ...rest
+  } = body;
+
+  // Empty, malformed, or stale relation IDs must not reach Prisma's foreign keys.
+  const domainId = typeof rawDomainId === "string" && rawDomainId.trim() ? rawDomainId.trim() : null;
+  const projectId = typeof rawProjectId === "string" && rawProjectId.trim() ? rawProjectId.trim() : null;
+  const [domain, project] = await Promise.all([
+    domainId ? db.domain.findUnique({ where: { id: domainId }, select: { id: true } }) : null,
+    projectId ? db.project.findUnique({ where: { id: projectId }, select: { id: true } }) : null,
+  ]);
 
   const item = await db.item.create({
     data: {
       ...rest,
+      domainId: domain?.id ?? null,
+      projectId: project?.id ?? null,
       ...(metadata ? { metadata: JSON.stringify(metadata) } : {}),
       ...(tagNames?.length
         ? {
