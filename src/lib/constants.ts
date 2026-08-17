@@ -1,4 +1,4 @@
-// The Terminal — shared constants
+// Life OS — shared constants
 
 export type DomainKey =
   | "mind_soul"
