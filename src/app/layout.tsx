@@ -21,28 +21,11 @@ export const metadata: Metadata = {
   category: "Productivity",
   manifest: "/manifest.json",
   alternates: { canonical: siteConfig.repositoryUrl },
-  openGraph: {
-    type: "website", url: siteConfig.repositoryUrl, siteName: siteConfig.name,
-    title: siteConfig.title, description: siteConfig.description, locale: "en_US",
-    images: [{ url: siteConfig.ogImage, width: 2058, height: 1338, alt: "The Terminal personal operating system" }],
-  },
+  openGraph: { type: "website", url: siteConfig.repositoryUrl, siteName: siteConfig.name, title: siteConfig.title, description: siteConfig.description, locale: "en_US", images: [{ url: siteConfig.ogImage, width: 2058, height: 1338, alt: "The Terminal" }] },
   twitter: { card: "summary_large_image", title: siteConfig.title, description: siteConfig.description, images: [siteConfig.ogImage] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "The Terminal" },
-  icons: {
-    icon: "/icon.png",
-    apple: "/apple-touch-icon.png",
-  },
+  icons: { icon: [{ url: "/icon.png", type: "image/png" }, { url: "/logo.svg", type: "image/svg+xml" }], apple: "/apple-touch-icon.png", shortcut: "/favicon.ico" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <QueryProvider>{children}<Toaster richColors position="bottom-right" closeButton /></QueryProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-}
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en" suppressHydrationWarning><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}><ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange><QueryProvider>{children}<Toaster richColors position="bottom-right" closeButton /></QueryProvider></ThemeProvider></body></html>; }
