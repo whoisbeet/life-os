@@ -28,13 +28,7 @@ import { SettingsView } from "./views/settings-view";
 import { Icon } from "./icon";
 import { useEffect } from "react";
 
-const MOBILE_NAV = [
-  { key: "dashboard", label: "Home", icon: "LayoutDashboard" },
-  { key: "inbox", label: "Inbox", icon: "Inbox" },
-  { key: "calendar", label: "Calendar", icon: "CalendarDays" },
-  { key: "focus", label: "Focus", icon: "Brain" },
-  { key: "reviews", label: "Reviews", icon: "NotebookPen" },
-] as const;
+const MOBILE_NAV = [{ key: "dashboard", label: "Dashboard", icon: "LayoutDashboard" }, { key: "inbox", label: "Inbox", icon: "Inbox" }, { key: "calendar", label: "Calendar", icon: "CalendarDays" }, { key: "agenda", label: "Agenda", icon: "CalendarRange" }, { key: "focus", label: "Focus", icon: "Brain" }, { key: "projects", label: "Projects", icon: "FolderKanban" }, { key: "graph", label: "Brain Graph", icon: "Network" }, { key: "reviews", label: "Reviews", icon: "NotebookPen" }, { key: "insights", label: "Insights", icon: "TrendingUp" }, { key: "all", label: "All Items", icon: "Layers" }] as const;
 
 export function Shell() {
   const { view, setQuickCaptureOpen, setCommandOpen, setView } = useLifeOS();
@@ -78,7 +72,7 @@ export function Shell() {
 }
 
 function MobileBottomNav({ view, onNavigate }: { view: string; onNavigate: (view: any) => void }) {
-  return <nav aria-label="Primary navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background px-2 pt-3 shadow-lg backdrop-blur-md md:hidden" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)" }}><div className="mx-auto flex max-w-lg items-center justify-around">{MOBILE_NAV.map((item) => { const active = view === item.key; return <button key={item.key} onClick={() => onNavigate(item.key)} aria-current={active ? "page" : undefined} className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg py-2 text-[10px] font-medium transition-colors ${active ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}><Icon name={item.icon} className="h-5 w-5" /><span>{item.label}</span></button>; })}</div></nav>;
+  return <nav aria-label="Primary navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background px-2 pt-3 shadow-lg backdrop-blur-md md:hidden" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)" }}><div className="mx-auto flex max-w-lg flex-row items-center overflow-x-auto no-scrollbar" style={{ WebkitOverflowScrolling: "touch" }}>{MOBILE_NAV.map((item) => { const active = view === item.key; return <button key={item.key} onClick={() => onNavigate(item.key)} aria-current={active ? "page" : undefined} className={`flex shrink-0 flex-col items-center gap-0.5 rounded-lg px-3 py-2 text-[10px] font-medium transition-colors ${active ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}><Icon name={item.icon} className="h-5 w-5" /><span>{item.label}</span></button>; })}</div></nav>;
 }
 
 function ViewSwitcher({ view }: { view: string }) { if (view === "dashboard") return <DashboardView />; if (view === "inbox") return <InboxView />; if (view === "calendar") return <CalendarView />; if (view === "agenda") return <AgendaView />; if (view === "focus") return <FocusView />; if (view === "projects") return <ProjectsView />; if (view === "graph") return <GraphView />; if (view === "sanctuary") return <SanctuaryView />; if (view === "journal") return <JournalEditorView />; if (view === "reviews") return <ReviewsView />; if (view === "insights") return <InsightsView />; if (view === "all") return <AllItemsView />; if (view === "settings") return <SettingsView />; return <DomainView domainKey={view} />; }
