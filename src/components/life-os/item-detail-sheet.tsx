@@ -899,6 +899,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
   const doneToday = logs.some((l) => normalizeLogDate(l.date) === todayKey);
 
   const days: Date[] = [];
+  const today = new Date();
   for (let i = 34; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
