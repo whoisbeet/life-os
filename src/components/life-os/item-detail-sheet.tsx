@@ -874,8 +874,24 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
   const toggle = useToggleHabit();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayKey = today.toISOString().slice(0, 10);
-  const normalizeLogDate = (date: unknown) => typeof date === "string" ? date.slice(0, 10) : new Date(date as string | number | Date).toISOString().slice(0, 10);
+  const getLocalDateString = (d: Date = new Date()) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const todayKey = getLocalDateString(today);
+  const normalizeLogDate = (date: unknown) => {
+    if (!date) return "";
+    if (typeof date === "string") return date.slice(0, 10);
+    if (date instanceof Date) {
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(date.getUTCDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+    return String(date).slice(0, 10);
+  };
   const doneToday = logs.some((l) => normalizeLogDate(l.date) === todayKey);
 
   const days: Date[] = [];
@@ -885,7 +901,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
     days.push(d);
   }
   const logSet = new Set(logs.map((l) => normalizeLogDate(l.date)));
-  const doneCount = days.filter((d) => logSet.has(d.toISOString().slice(0, 10))).length;
+  const doneCount = days.filter((d) => logSet.has(getLocalDateString(d))).length;
 
   return (
     <div className="rounded-xl border border-border/50 bg-card/30 p-4">
