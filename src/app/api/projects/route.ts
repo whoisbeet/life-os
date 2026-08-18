@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   const projects = await db.project.findMany({
     where,
-    orderBy: { updatedAt: "desc" },
+    orderBy: [ { targetDate: { sort: "asc", nulls: "last" } }, { createdAt: "desc" } ],
     include: {
       domain: true,
       _count: { select: { items: true } },
