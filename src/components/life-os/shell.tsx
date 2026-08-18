@@ -64,7 +64,7 @@ export function Shell() {
   useEffect(() => { fetch("/api/scheduler", { method: "POST" }).catch(() => {}); }, []);
 
   return <div className="flex h-screen overflow-hidden bg-background">
-    <div className="hidden md:block"><Sidebar /></div>
+    <Sidebar />
     <div className="flex min-w-0 flex-1 flex-col"><Topbar /><main className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-[calc(7rem+env(safe-area-inset-bottom,0px)+20px)] md:pb-0"><div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8"><AnimatePresence mode="wait"><motion.div key={view} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.2 }}><ViewSwitcher view={view} /></motion.div></AnimatePresence></div><Footer onQuickCapture={() => setQuickCaptureOpen(true)} onCommand={() => setCommandOpen(true)} /></main></div>
     <MobileBottomNav view={view} onNavigate={setView} />
     <QuickCapture /><ItemEditor /><ItemDetailSheet /><CommandPalette /><ShortcutsHelp /><NotificationManager /><OnboardingFlow />
