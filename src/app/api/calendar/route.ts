@@ -26,17 +26,34 @@ export async function GET(req: NextRequest) {
     ],
   };
 
+  let projectWhere: any = {
+    targetDate: { gte: from, lte: to },
+    status: { not: "archived" },
+  };
+
   if (layers) {
     const vals = layers.split(",");
-    if (layerMode === "type") where.type = { in: vals };
-    else where.domainId = { in: vals };
+    if (layerMode === "type") {
+      where.type = { in: vals };
+      if (!vals.includes("project")) projectWhere = { id: "__no_project_layer__" };
+    } else {
+      where.domainId = { in: vals };
+      projectWhere.domainId = { in: vals };
+    }
   }
 
-  const items = await db.item.findMany({
-    where,
-    include: { domain: true, project: { select: { id: true, name: true, color: true } } },
-    orderBy: [{ dueDate: "asc" }, { scheduledAt: "asc" }],
-  });
+  const [items, projects] = await Promise.all([
+    db.item.findMany({
+      where,
+      include: { domain: true, project: { select: { id: true, name: true, color: true } } },
+      orderBy: [{ dueDate: "asc" }, { scheduledAt: "asc" }],
+    }),
+    db.project.findMany({
+      where: projectWhere,
+      include: { domain: true },
+      orderBy: { targetDate: "asc" },
+    }),
+  ]);
 
   // bucket by day
   const days: Record<string, any[]> = {};
@@ -48,5 +65,21 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return ok({ from: from.toISOString(), to: to.toISOString(), days, items: items.map((i) => parseMeta(i as any)) });
+  for (const project of projects) {
+    const key = new Date(project.targetDate!).toISOString().slice(0, 10);
+    (days[key] ||= []).push({
+      id: project.id,
+      type: "project",
+      title: project.name,
+      color: project.color,
+      targetDate: project.targetDate,
+      domainId: project.domainId,
+      domain: project.domain,
+      project: { id: project.id, name: project.name, color: project.color },
+      _dateField: "target",
+      _isProject: true,
+    });
+  }
+
+  return ok({ from: from.toISOString(), to: to.toISOString(), days, items: items.map((i) => parseMeta(i as any)), projects: projects.map((p) => parseMeta(p as any)) });
 }

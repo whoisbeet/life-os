@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 export function CalendarView() {
-  const { calendarLayers, toggleLayer, calendarLayerMode, setCalendarLayerMode, openItemDetail } = useLifeOS();
+  const { calendarLayers, toggleLayer, calendarLayerMode, setCalendarLayerMode, openItemDetail, openProject } = useLifeOS();
   const [cursor, setCursor] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(new Date());
 
@@ -218,12 +218,12 @@ export function CalendarView() {
                       layout
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      onClick={() => openItemDetail(it.id)}
+                      onClick={() => it.type === "project" ? openProject(it.id) : openItemDetail(it.id)}
                       className="flex w-full items-start gap-2.5 rounded-lg p-2 text-left transition-colors hover:bg-muted/50"
                     >
                       <span
                         className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg"
-                        style={{ background: `${m.color}1a`, color: m.color }}
+                        style={{ background: `${it.type === "project" && it.color ? it.color : m.color}1a`, color: it.type === "project" && it.color ? it.color : m.color }}
                       >
                         <Icon name={m.icon} className="h-3.5 w-3.5" />
                       </span>
@@ -231,7 +231,7 @@ export function CalendarView() {
                         <p className="truncate text-sm font-medium">{it.title}</p>
                         <p className="text-[11px] text-muted-foreground">
                           {m.name}
-                          {it._dateField === "due" ? " · due" : it._dateField === "scheduled" ? " · scheduled" : ""}
+                          {it._dateField === "due" ? " · due" : it._dateField === "scheduled" ? " · scheduled" : it._dateField === "target" ? " · target date" : ""}
                           {it.metadata?.amount ? ` · $${it.metadata.amount}` : ""}
                         </p>
                       </div>

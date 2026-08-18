@@ -116,7 +116,8 @@ export type ItemType =
   | "symptom"
   | "medication"
   | "affirmation"
-  | "vision";
+  | "vision"
+  | "project";
 
 export interface ItemTypeMeta {
   type: ItemType;
@@ -145,6 +146,7 @@ export const ITEM_TYPES: ItemTypeMeta[] = [
   { type: "medication", name: "Medication", icon: "Pill", color: "#f43f5e", hasDate: true },
   { type: "affirmation", name: "Affirmation", icon: "Heart", color: "#a78bfa" },
   { type: "vision", name: "Vision", icon: "Eye", color: "#a78bfa" },
+  { type: "project", name: "Project", icon: "FolderKanban", color: "#06b6d4", hasDate: true },
 ];
 
 export const ITEM_TYPE_MAP: Record<string, ItemTypeMeta> = Object.fromEntries(
