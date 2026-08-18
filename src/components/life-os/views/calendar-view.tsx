@@ -120,7 +120,10 @@ export function CalendarView() {
                     isSelected && "bg-primary/5 ring-1 ring-inset ring-primary/30",
                   )}
                 >
-                  <div className="mb-1 flex items-center justify-between">
+                  <div className="mb-1 flex items-center justify-end gap-1">
+                    {items.length > 3 && (
+                      <span className="text-[9px] text-muted-foreground">+{items.length - 3}</span>
+                    )}
                     <span
                       className={cn(
                         "flex h-6 w-6 items-center justify-center rounded-full text-xs",
@@ -129,9 +132,6 @@ export function CalendarView() {
                     >
                       {format(day, "d")}
                     </span>
-                    {items.length > 3 && (
-                      <span className="text-[9px] text-muted-foreground">+{items.length - 3}</span>
-                    )}
                   </div>
                   <div className="space-y-0.5">
                     {items.slice(0, 3).map((it, idx) => {
