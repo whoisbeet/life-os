@@ -114,13 +114,13 @@ export function CalendarView() {
                   key={i}
                   onClick={() => setSelectedDay(day)}
                   className={cn(
-                    "min-h-[88px] border-b border-r border-border/40 p-1.5 text-left transition-colors hover:bg-muted/40",
+                    "flex flex-col justify-start min-h-[88px] border-b border-r border-border/40 p-1.5 text-left transition-colors hover:bg-muted/40",
                     !inMonth && "bg-muted/20 opacity-50",
                     (i + 1) % 7 === 0 && "border-r-0",
                     isSelected && "bg-primary/5 ring-1 ring-inset ring-primary/30",
                   )}
                 >
-                  <div className="mb-1 flex items-center justify-end gap-1">
+                  <div className="mb-1 flex w-full items-center justify-end gap-1">
                     {items.length > 3 && (
                       <span className="text-[9px] text-muted-foreground">+{items.length - 3}</span>
                     )}
