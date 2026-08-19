@@ -273,7 +273,7 @@ export function DashboardView() {
             {stats?.habitStats && stats.habitStats.length > 0 && (
               <SectionCard title="Habits this week" icon="Repeat">
                 <div className="space-y-2.5">
-                  {stats.habitStats.slice(0, 4).map((h: any) => (
+                  {stats.habitStats.map((h: any) => (
                     <div key={h.id}>
                       <div className="mb-1 flex items-center justify-between text-xs">
                         <span className="truncate font-medium">{h.title}</span>
