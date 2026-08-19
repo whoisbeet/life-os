@@ -9,12 +9,13 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
   const { id } = await ctx.params;
   const item = await db.item.findUnique({
     where: { id },
-    include: {
-      tags: { include: { tag: true } },
-      domain: true,
-      project: true,
-      linksFrom: { include: { to: { include: { domain: true, project: { select: { id: true, name: true, color: true } } } } } },
-      linksTo: { include: { from: { include: { domain: true, project: { select: { id: true, name: true, color: true } } } } } },
+    select: {
+      id: true, type: true, title: true, content: true, domainId: true, projectId: true,
+      status: true, priority: true, energy: true, startDate: true, dueDate: true,
+      scheduledAt: true, completedAt: true, metadata: true, createdAt: true, updatedAt: true,
+      tags: { select: { tag: true } }, domain: true, project: true,
+      linksFrom: { select: { id: true, type: true, fromId: true, toId: true, to: { select: { id: true, type: true, title: true, domain: { select: { id: true, name: true, color: true } }, project: { select: { id: true, name: true, color: true } } } } } },
+      linksTo: { select: { id: true, type: true, fromId: true, toId: true, from: { select: { id: true, type: true, title: true, domain: { select: { id: true, name: true, color: true } }, project: { select: { id: true, name: true, color: true } } } } } },
       habitLogs: { orderBy: { date: "desc" }, take: 60 },
     },
   });
