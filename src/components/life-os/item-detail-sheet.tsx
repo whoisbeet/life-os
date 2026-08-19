@@ -869,34 +869,21 @@ function ConnectionRow({
   );
 }
 
+function toHabitDateKey(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  return d.toISOString().slice(0, 10);
+}
+
 // ── Habit section with improved heatmap ──
 function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; logs: any[]; meta: any; accentColor: string }) {
   const toggle = useToggleHabit();
-  const toLocalDateKey = (d: unknown): string => {
-    if (!d) return "";
-    if (typeof d === "string") {
-      if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
-      const dateObj = new Date(d);
-      if (!isNaN(dateObj.getTime())) {
-        const y = dateObj.getFullYear();
-        const m = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const day = String(dateObj.getDate()).padStart(2, "0");
-        return `${y}-${m}-${day}`;
-      }
-      return d.slice(0, 10);
-    }
-    if (d instanceof Date && !isNaN(d.getTime())) {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
-    }
-    return "";
-  };
-
-  const todayKey = toLocalDateKey(new Date());
-  const normalizeLogDate = (date: unknown) => typeof date === "string" ? date.slice(0, 10) : new Date(date as string | number | Date).toISOString().slice(0, 10);
-  const doneToday = logs.some((l) => normalizeLogDate(l.date) === todayKey);
+  const todayKey = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Bangkok",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const doneToday = logs.some((l) => toHabitDateKey(l.date) === todayKey);
 
   const days: Date[] = [];
   const today = new Date();
@@ -905,7 +892,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
     d.setDate(d.getDate() - i);
     days.push(d);
   }
-  const logSet = new Set(logs.map((l) => normalizeLogDate(l.date)));
+  const logSet = new Set(logs.map((l) => toHabitDateKey(l.date)));
   const doneCount = days.filter((d) => logSet.has(d.toISOString().slice(0, 10))).length;
 
   return (
@@ -931,7 +918,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
       </div>
       <div className="grid grid-flow-col grid-rows-7 gap-1" style={{ gridAutoColumns: "minmax(0, 1fr)" }}>
         {days.map((d) => {
-          const key = toLocalDateKey(d);
+          const key = toHabitDateKey(d);
           const done = logSet.has(key);
           const isToday = key === todayKey;
           return (
