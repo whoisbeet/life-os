@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AgendaView() {
-  const { openItemDetail } = useLifeOS();
+  const { openItemDetail, openProject } = useLifeOS();
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
   const { data, isLoading } = useCalendar({
     from: weekStart.toISOString(),
@@ -141,7 +141,7 @@ export function AgendaView() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.9 }}
-                          onClick={() => openItemDetail(item.id)}
+                          onClick={() => (item.type === "project" || (item as any)._isProject ? openProject(item.id) : openItemDetail(item.id))}
                           className={cn(
                             "group flex w-full items-start gap-1.5 rounded-lg border-l-2 bg-background/60 p-1.5 text-left transition-all hover:bg-background hover:shadow-sm",
                             isDone && "opacity-50",
