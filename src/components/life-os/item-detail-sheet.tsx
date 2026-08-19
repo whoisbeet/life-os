@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 
 export function ItemDetailSheet() {
   const { itemDetailId, closeItemDetail, openItemEditor } = useLifeOS();
-  const { data: item, isLoading } = useItem(itemDetailId);
+  const { data: item, isLoading, isError, refetch } = useItem(itemDetailId);
   const update = useUpdateItem();
   const del = useDeleteItem();
   const createLink = useCreateLink();
@@ -43,7 +43,7 @@ export function ItemDetailSheet() {
   const [editingContent, setEditingContent] = useState(false);
   const [contentDraft, setContentDraft] = useState("");
 
-  const { data: searchResults } = useItems(linkSearch ? { q: linkSearch } : {});
+  const { data: searchResults } = useItems(linkSearch.trim() ? { q: linkSearch } : {});
   const linkResults = searchResults?.items ?? [];
 
   if (!itemDetailId) return null;
@@ -82,7 +82,13 @@ export function ItemDetailSheet() {
   return (
     <Sheet open={!!itemDetailId} onOpenChange={(o) => !o && closeItemDetail()}>
       <SheetContent className="w-full gap-0 overflow-hidden p-0 sm:max-w-[600px]">
-        {isLoading || !item ? (
+        {isError ? (
+          <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+            <p className="text-sm font-medium">Unable to load this item.</p>
+            <p className="text-xs text-muted-foreground">Please try again.</p>
+            <Button size="sm" onClick={() => refetch()}>Retry</Button>
+          </div>
+        ) : isLoading || !item ? (
           <DetailSkeleton />
         ) : (
           <div className="flex h-full flex-col">
