@@ -1,5 +1,33 @@
 import { format, formatDistanceToNow, isToday, isTomorrow, isYesterday, isThisWeek, parseISO, differenceInCalendarDays } from "date-fns";
 
+const BANGKOK_TIME_ZONE = "Asia/Bangkok";
+
+export function bangkokDateKey(d: string | Date): string {
+  const date = typeof d === "string" ? parseISO(d) : d;
+  return new Intl.DateTimeFormat("en-CA", { timeZone: BANGKOK_TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+}
+
+export function currentBangkokDateKey(): string {
+  return bangkokDateKey(new Date());
+}
+
+export function addBangkokDays(dateKey: string, days: number): string {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + days, 12));
+  return new Intl.DateTimeFormat("en-CA", { timeZone: BANGKOK_TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+}
+
+export function calculateCurrentStreak(logDates: Array<string | Date>): number {
+  const loggedDates = new Set(logDates.map(bangkokDateKey));
+  let streak = 0;
+  let dateKey = currentBangkokDateKey();
+  while (loggedDates.has(dateKey)) {
+    streak += 1;
+    dateKey = addBangkokDays(dateKey, -1);
+  }
+  return streak;
+}
+
 export function fmtDate(d: string | Date | null | undefined, fmt = "MMM d") {
   if (!d) return "";
   const date = typeof d === "string" ? parseISO(d) : d;
