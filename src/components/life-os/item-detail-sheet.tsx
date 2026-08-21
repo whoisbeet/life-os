@@ -15,7 +15,7 @@ import { useLifeOS } from "@/store/life-os";
 import { useItem, useUpdateItem, useDeleteItem, useCreateLink, useDeleteLink, useItems, useToggleHabit } from "@/lib/hooks";
 import { Icon } from "./icon";
 import { ITEM_TYPE_MAP, DOMAIN_MAP, PRIORITY_META, STATUS_META } from "@/lib/constants";
-import { fmtDate, smartDate, dateColor } from "@/lib/dates";
+import { fmtDate, smartDate, dateColor, calculateCurrentStreak, toBangkokDateKey } from "@/lib/dates";
 import { notify } from "@/lib/toast";
 import ReactMarkdown from "react-markdown";
 import {
@@ -92,7 +92,7 @@ export function ItemDetailSheet() {
           <DetailSkeleton />
         ) : (
           <div className="flex h-full flex-col">
-            {/* ── Hero Header with gradient ── */}
+            {/* ââ Hero Header with gradient ââ */}
             <div
               className="relative flex-shrink-0 overflow-hidden px-6 pb-5 pt-6"
               style={{
@@ -185,7 +185,7 @@ export function ItemDetailSheet() {
               </SheetHeader>
             </div>
 
-            {/* ── Scrollable body ── */}
+            {/* ââ Scrollable body ââ */}
             <div className="flex-1 overflow-y-auto px-6 py-5">
               <div className="space-y-5">
                 {/* Type-specific highlight card */}
@@ -212,7 +212,7 @@ export function ItemDetailSheet() {
                   </div>
                 )}
 
-                {/* Notes / Content — type-aware */}
+                {/* Notes / Content â type-aware */}
                 {item.type === "journal" ? (
                   <JournalEditor
                     content={item.content}
@@ -252,7 +252,7 @@ export function ItemDetailSheet() {
                       value={contentDraft}
                       onChange={(e) => setContentDraft(e.target.value)}
                       className="resize-none border-0 bg-transparent p-0 text-sm focus-visible:ring-0"
-                      placeholder="Write your notes… (Markdown supported)"
+                      placeholder="Write your notesâ¦ (Markdown supported)"
                       autoFocus
                     />
                   ) : item.content ? (
@@ -288,7 +288,7 @@ export function ItemDetailSheet() {
                     <Input
                       value={linkSearch}
                       onChange={(e) => setLinkSearch(e.target.value)}
-                      placeholder="Search to connect…"
+                      placeholder="Search to connectâ¦"
                       className="h-8 bg-background pl-8 text-sm"
                     />
                     <AnimatePresence>
@@ -320,7 +320,7 @@ export function ItemDetailSheet() {
                     </AnimatePresence>
                   </div>
 
-                  {/* Connection list — compact rows */}
+                  {/* Connection list â compact rows */}
                   <div className="space-y-1.5">
                     {item.linksFrom?.map((l: any) => {
                       const m = ITEM_TYPE_MAP[l.to.type] || { icon: "Circle", color: "#71717a" };
@@ -365,13 +365,13 @@ export function ItemDetailSheet() {
                 {/* Timestamps */}
                 <div className="flex items-center justify-center gap-3 pb-2 text-[10px] text-muted-foreground/50">
                   <span>Created {fmtDate(item.createdAt, "MMM d, yyyy")}</span>
-                  <span>·</span>
+                  <span>Â·</span>
                   <span>Updated {fmtDate(item.updatedAt, "MMM d")}</span>
                 </div>
               </div>
             </div>
 
-            {/* ── Sticky action bar ── */}
+            {/* ââ Sticky action bar ââ */}
             <div className="flex-shrink-0 border-t border-border/60 bg-background/80 px-6 py-3 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 {(item.type === "task" || item.type === "milestone" || item.type === "bookmark") && (
@@ -422,7 +422,7 @@ export function ItemDetailSheet() {
   );
 }
 
-// ── Type-specific highlight card ──
+// ââ Type-specific highlight card ââ
 function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
   const m = item.metadata || {};
 
@@ -446,7 +446,7 @@ function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
               className="mt-0.5 text-3xl font-bold tabular-nums"
               style={{ color: isIncome ? "#10b981" : isGoal ? "#3b82f6" : "#f43f5e" }}
             >
-              {isIncome ? "+" : isGoal ? "" : "−"}${Number(m.amount).toLocaleString()}
+              {isIncome ? "+" : isGoal ? "" : "â"}${Number(m.amount).toLocaleString()}
             </p>
           </div>
           {m.recurring && m.recurring !== "one-time" && (
@@ -596,6 +596,7 @@ function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
   }
 
   // Habit: streak display
+  const habitStreak = calculateCurrentStreak((item.habitLogs || []).map((l: any) => l.date)) || (m.streak || 0);
   if (item.type === "habit" && (m.streak != null || m.target != null)) {
     return (
       <motion.div
@@ -605,7 +606,7 @@ function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
         style={{ background: `linear-gradient(135deg, ${typeMeta.color}15, transparent)` }}
       >
         <div className="text-center">
-          <p className="text-2xl font-bold" style={{ color: typeMeta.color }}>{m.streak || 0}</p>
+          <p className="text-2xl font-bold" style={{ color: typeMeta.color }}>{habitStreak}</p>
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground">day streak</p>
         </div>
         <div className="h-10 w-px bg-border/40" />
@@ -644,7 +645,7 @@ function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
   return null;
 }
 
-// ── Journal editor — large writing-focused area ──
+// ââ Journal editor â large writing-focused area ââ
 function JournalEditor({
   content, editing, draft, onEdit, onCancel, onSave, onChange, accentColor, itemId,
 }: {
@@ -669,9 +670,9 @@ function JournalEditor({
           <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
             <Icon name="PenLine" className="h-3 w-3" style={{ color: accentColor }} />
             <span className="font-medium">Writing</span>
-            <span>·</span>
+            <span>Â·</span>
             <span>{wordCount} words</span>
-            <span>·</span>
+            <span>Â·</span>
             <span>{readTime} min read</span>
           </div>
           <div className="flex gap-1">
@@ -684,7 +685,7 @@ function JournalEditor({
           onChange={(e) => onChange(e.target.value)}
           rows={14}
           className="resize-y border-0 bg-background p-4 text-[15px] leading-relaxed focus-visible:ring-0"
-          placeholder="What's on your mind? Write freely…&#10;&#10;Markdown is supported — use **bold**, *italic*, # headings, - lists."
+          placeholder="What's on your mind? Write freelyâ¦&#10;&#10;Markdown is supported â use **bold**, *italic*, # headings, - lists."
           autoFocus
         />
       </div>
@@ -699,9 +700,9 @@ function JournalEditor({
           <span className="font-medium">Journal entry</span>
           {content && (
             <>
-              <span>·</span>
+              <span>Â·</span>
               <span>{wordCount} words</span>
-              <span>·</span>
+              <span>Â·</span>
               <span>{readTime} min read</span>
             </>
           )}
@@ -733,7 +734,7 @@ function JournalEditor({
             className="flex w-full flex-col items-center py-8 text-center text-muted-foreground/60 transition-colors hover:text-muted-foreground"
           >
             <Icon name="PenLine" className="mb-2 h-6 w-6" style={{ color: accentColor }} />
-            <p className="text-sm">Start writing your journal entry…</p>
+            <p className="text-sm">Start writing your journal entryâ¦</p>
           </button>
         )}
       </div>
@@ -741,7 +742,7 @@ function JournalEditor({
   );
 }
 
-// ── Reading progress updater (for books) ──
+// ââ Reading progress updater (for books) ââ
 function ReadingProgressUpdater({ item, currentPage, totalPages, accentColor }: { item: any; currentPage: number; totalPages: number; accentColor: string }) {
   const update = useUpdateItem();
   const [pageInput, setPageInput] = useState(String(currentPage));
@@ -791,7 +792,7 @@ function ReadingProgressUpdater({ item, currentPage, totalPages, accentColor }: 
           className="rounded-md border border-border/60 px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-muted"
           title="Go back 10 pages"
         >
-          −10
+          â10
         </button>
         <button
           onClick={() => updatePage(Math.min(totalPages, currentPage + 10))}
@@ -813,7 +814,7 @@ function ReadingProgressUpdater({ item, currentPage, totalPages, accentColor }: 
   );
 }
 
-// ── Metadata grid (filtered to useful fields) ──
+// ââ Metadata grid (filtered to useful fields) ââ
 function MetadataGrid({ metadata, type }: { metadata: any; type: string }) {
   // Skip fields already shown in TypeHighlight
   const skip: Record<string, string[]> = {
@@ -839,7 +840,7 @@ function MetadataGrid({ metadata, type }: { metadata: any; type: string }) {
   );
 }
 
-// ── Compact connection row ──
+// ââ Compact connection row ââ
 function ConnectionRow({
   icon, color, title, type, direction, onClick, onRemove,
 }: {
@@ -860,7 +861,7 @@ function ConnectionRow({
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-medium">{title}</p>
           <p className="text-[10px] text-muted-foreground">
-            {direction === "in" ? "← linked from" : "→ links to"} · {type}
+            {direction === "in" ? "â linked from" : "â links to"} Â· {type}
           </p>
         </div>
       </button>
@@ -877,10 +878,10 @@ function ConnectionRow({
 
 function toHabitDateKey(value: string | Date): string {
   const d = typeof value === "string" ? new Date(value) : value;
-  return d.toISOString().slice(0, 10);
+  return toBangkokDateKey(d);
 }
 
-// ── Habit section with improved heatmap ──
+// ââ Habit section with improved heatmap ââ
 function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; logs: any[]; meta: any; accentColor: string }) {
   const toggle = useToggleHabit();
   const todayKey = new Intl.DateTimeFormat("en-CA", {
@@ -889,6 +890,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
     month: "2-digit",
     day: "2-digit",
   }).format(new Date());
+  const currentStreak = calculateCurrentStreak(logs.map((l) => l.date));
   const doneToday = logs.some((l) => toHabitDateKey(l.date) === todayKey);
 
   const days: Date[] = [];
@@ -899,7 +901,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
     days.push(d);
   }
   const logSet = new Set(logs.map((l) => toHabitDateKey(l.date)));
-  const doneCount = days.filter((d) => logSet.has(d.toISOString().slice(0, 10))).length;
+  const doneCount = days.filter((d) => logSet.has(toBangkokDateKey(d))).length;
 
   return (
     <div className="rounded-xl border border-border/50 bg-card/30 p-4">
@@ -909,7 +911,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
             <Icon name="CalendarCheck" className="h-3 w-3" />
             Last 5 weeks
           </h4>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{doneCount}/35 days · streak {meta?.streak || 0}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{doneCount}/35 days Â· streak {currentStreak}</p>
         </div>
         <Button
           size="sm"
@@ -948,7 +950,7 @@ function HabitSection({ itemId, logs, meta, accentColor }: { itemId: string; log
   );
 }
 
-// ── Loading skeleton ──
+// ââ Loading skeleton ââ
 function DetailSkeleton() {
   return (
     <div className="flex h-full flex-col">
@@ -975,7 +977,7 @@ function DetailSkeleton() {
   );
 }
 
-// ── Helpers ──
+// ââ Helpers ââ
 function hasUsefulMetadata(metadata: any, type: string) {
   const skip: Record<string, string[]> = {
     finance: ["kind", "amount", "recurring", "current"],
