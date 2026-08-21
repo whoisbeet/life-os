@@ -19,8 +19,15 @@ export function addBangkokDays(dateKey: string, days: number): string {
 
 export function calculateCurrentStreak(logDates: Array<string | Date>): number {
   const loggedDates = new Set(logDates.map(bangkokDateKey));
+  const today = currentBangkokDateKey();
+  const yesterday = addBangkokDays(today, -1);
+
+  if (!loggedDates.has(today) && !loggedDates.has(yesterday)) {
+    return 0;
+  }
+
+  let dateKey = loggedDates.has(today) ? today : yesterday;
   let streak = 0;
-  let dateKey = currentBangkokDateKey();
   while (loggedDates.has(dateKey)) {
     streak += 1;
     dateKey = addBangkokDays(dateKey, -1);
