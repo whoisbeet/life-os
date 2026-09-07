@@ -24,18 +24,21 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
   }
 
   const tasks = items.filter((i) => i.type === "task");
+  const tasksDone = tasks.filter((t) => t.status === "done").length;
+  const tasksActive = tasks.filter((t) => t.status === "active").length;
+  const taskTotal = tasks.length;
   const finances = items.filter((i) => i.type === "finance").map((f) => parseMeta(f as any));
   const income = finances.filter((f) => f.metadata?.kind === "income").reduce((s, f) => s + (f.metadata?.amount || 0), 0);
   const expense = finances.filter((f) => f.metadata?.kind === "expense").reduce((s, f) => s + (f.metadata?.amount || 0), 0);
 
   return ok({
-    project,
+    project: { ...project, progress: taskTotal > 0 ? Math.round((tasksDone / taskTotal) * 100) : 0 },
     items: items.map((i) => parseMeta(i as any)),
     byType,
     stats: {
       total: items.length,
-      tasksDone: tasks.filter((t) => t.status === "done").length,
-      tasksActive: tasks.filter((t) => t.status === "active").length,
+      tasksDone,
+      tasksActive,
       income,
       expense,
       net: income - expense,
