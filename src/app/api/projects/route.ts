@@ -29,12 +29,15 @@ export async function GET(req: NextRequest) {
         select: { type: true, status: true, dueDate: true },
       });
       const tasks = items.filter((i) => i.type === "task");
+      const taskTotal = tasks.length;
+      const taskDone = tasks.filter((t) => t.status === "done").length;
       return {
         ...p,
         itemCount: items.length,
-        taskTotal: tasks.length,
-        taskDone: tasks.filter((t) => t.status === "done").length,
+        taskTotal,
+        taskDone,
         taskActive: tasks.filter((t) => t.status === "active").length,
+        progress: taskTotal > 0 ? Math.round((taskDone / taskTotal) * 100) : 0,
         upcomingDue: items.filter((i) => i.dueDate && new Date(i.dueDate) >= new Date()).length,
       };
     }),
