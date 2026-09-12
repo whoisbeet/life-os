@@ -23,8 +23,8 @@ export function CalendarView() {
 
   const monthStart = startOfMonth(cursor);
   const monthEnd = endOfMonth(cursor);
-  const gridStart = startOfWeek(monthStart, { weekStartsOn: 1 });
-  const gridEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+  const gridStart = startOfWeek(monthStart, { weekStartsOn: 0 });
+  const gridEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
   const days = eachDayOfInterval({ start: gridStart, end: gridEnd });
 
   const from = gridStart.toISOString();
@@ -84,7 +84,7 @@ export function CalendarView() {
 
           {/* Weekday header */}
           <div className="grid grid-cols-7 border-b border-border/60">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
               <div key={d} className="px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 {d}
               </div>
